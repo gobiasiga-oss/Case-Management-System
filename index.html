@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="CSS/styles.css">
+
+    <!-- Firebase SDK (using ES Modules) -->
+    <script type="module" src="https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js"></script>
+
+    <!-- Reference to external JavaScript file -->
+    <script type="module" src="JavaScript\login.js"></script>
+</head>
+
+<body>
+    <div class="auth-page">
+        <div class="auth-container">
+            <div class="auth-box">
+                <h2>Login</h2>
+                <form id="loginForm">
+                    <div class="input-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="Enter your email" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="Enter your password" required>
+                    </div>
+                    <button type="submit" class="primary-btn">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

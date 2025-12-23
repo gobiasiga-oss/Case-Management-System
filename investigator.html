@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="no-store" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <title>Fraud Dashboard</title>
+
+    <!-- Your CSS -->
+    <link rel="stylesheet" href="CSS/styles.css" />
+
+    <!-- Optional jQuery + jQuery UI (only needed if you use datepickers or dialogs) -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+    <!-- Your Firebase + Investigator JS file -->
+    <script type="module" src="JavaScript/investigator.js"></script>
+</head>
+
+
+<body>
+    <div class="investigator-landing">
+        <header>
+            <div class="logo">FraudWatch</div>
+            <button class="sign-out">Sign Out</button>
+        </header>
+
+        <div class="container">
+            <nav>
+                <h3 id="welcomeMessage"></h3>
+                <ul>
+                    <li>Add Case</li>
+                    <li>Assigned Cases</li>
+                    <!-- <li>Investigation Progress</li> -->
+                    <!-- <li>Close Cases</li> -->
+                    <!-- <li>Generate Reports</li> -->
+                </ul>
+            </nav>
+            <div class="main-content">
+
+                <!-- Assigned Cases -->
+                <section id="assigned-cases" class="content-section" style="display: none;">
+                    <h2>Assigned Cases</h2>
+
+                    <!-- Unified container style like active-cases -->
+                    <div id="cases-container" class="cards-container" style="margin-bottom: 2rem;"></div>
+                </section>
+
+                <section id="case-details" class="content-section" style="display: none;">
+                    <h2>Case Details</h2>
+                    <div id="case-details-content" class="case-details-container"></div>
+                </section>
+
+                <!-- Investigation Progress -->
+                <section id="investigation-progress" class="content-section dynamic-form" style="display: none;">
+                    <h2>Investigation Progress</h2>
+
+                    <!-- Case Cards -->
+                    <div id="assigned-cases-container">
+                        <h3>Assigned Cases</h3>
+                        <div id="case-cards" class="case-card-container">
+                        </div>
+                    </div>
+
+                    <!-- Investigation Form Container (progress bar + form steps) -->
+                    <div id="investigation-form-container" style="display: none;">
+
+                        <!-- Progress Bar -->
+                        <!-- Animated Progress Bar -->
+                        <!-- Animated Progress Bar with Circles -->
+                        <div id="animated-progress-bar">
+                            <div id="progress-track">
+                                <div id="progress-fill"></div>
+
+                                <!-- Step Circles -->
+                                <div class="progress-step-circle" data-step="0">1</div>
+                                <div class="progress-step-circle" data-step="1">2</div>
+                                <div class="progress-step-circle" data-step="2">3</div>
+                            </div>
+
+                            <!-- Step Labels -->
+                            <div class="progress-step-labels">
+                                <span>Evidence</span>
+                                <span>Interviews</span>
+                                <span>Report</span>
+                            </div>
+                        </div>
+
+                        <!-- Evidence Collection Section -->
+                        <section id="evidence-section" class="investigation-step">
+                            <h3>Evidence Collection</h3>
+                            <form id="evidence-form">
+                                <div id="saved-evidence-list"></div>
+                                <div id="evidence-container">
+                                    <div class="evidence-item">
+                                        <label>What evidence was collected?</label><br />
+                                        <textarea name="evidenceDetails" required></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="evidence-buttons">
+                                    <button type="button" id="add-evidence">+ Add Evidence</button>
+                                    <div class="right-buttons">
+                                        <button type="button" id="save-evidence">Save</button>
+                                        <button type="button" id="next-to-interviews">Next</button>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </section>
+
+
+                        <!-- Interviews Section -->
+                        <section id="interviews-section" class="investigation-step" style="display: none;">
+                            <h3>Interviews Conducted</h3>
+                            <form id="interviews-form">
+                                <label for="intervieweeNames">Who was interviewed?</label><br />
+                                <input type="text" id="intervieweeNames" name="intervieweeNames" required><br />
+
+                                <label for="interviewDetails">What did they say?</label><br />
+                                <textarea id="interviewDetails" name="interviewDetails" required></textarea><br />
+
+                                <button type="button" id="prev-to-evidence">Previous</button>
+                                <button type="button" id="save-interviews">Save</button>
+                                <button type="button" id="next-to-report">Next</button>
+                            </form>
+                        </section>
+
+                        <!-- Report Drafting Section -->
+                        <section id="report-section" class="investigation-step" style="display: none;">
+                            <h3>Report Drafting</h3>
+                            <form id="report-form">
+                                <label for="findings">Findings:</label><br />
+                                <textarea id="findings" name="findings" required></textarea><br />
+
+                                <label for="recommendations">Recommendations:</label><br />
+                                <textarea id="recommendations" name="recommendations" required></textarea><br />
+
+                                <label for="actioner">Actioner:</label><br />
+                                <input type="text" id="actioner" name="actioner" required><br />
+
+                                <button type="button" id="prev-to-interviews">Previous</button>
+                                <button type="submit" id="save-report">Submit Report</button>
+                            </form>
+                        </section>
+
+                    </div>
+                </section>
+
+                <!-- Close Cases -->
+                <section id="close-cases" class="content-section dynamic-form" style="display: none;">
+                    <h2>Close Cases</h2>
+
+                    <!-- Container for list of cases eligible for closing -->
+                    <div id="closable-cases-list" class="case-card-container">
+                        <!-- Dynamically filled -->
+                    </div>
+
+                    <!-- Modal or area to show case summary when "View Summary" is clicked -->
+                    <div id="case-summary-modal" style="display: none;">
+                        <h3>Case Summary</h3>
+                        <div id="case-summary-content">
+                            <!-- Filled in dynamically -->
+                        </div>
+                        <button id="close-summary-btn">Close</button>
+                    </div>
+                    <!-- Close Case Form -->
+                    <form id="close-case-form" style="margin-top: 2rem;">
+
+                        <!-- Amount Involved -->
+                        <div class="form-row">
+                            <div class="form-group" style="flex:1;">
+                                <label for="amountInvolved">Amount Involved:</label>
+                                <input type="number" id="amountInvolved" name="amountInvolved" required
+                                    placeholder="Enter amount..." />
+                            </div>
+                            <div class="form-group" style="flex:1;">
+                                <label>Was the fraud successful?</label>
+                                <div class="radio-row">
+                                    <div class="radio-item">
+                                        <label for="successfulFraudYes">Yes</label>
+                                        <input type="radio" name="successfulFraud" id="successfulFraudYes" value="yes"
+                                            required>
+                                    </div>
+                                    <div class="radio-item">
+                                        <label for="successfulFraudNo">No</label>
+                                        <input type="radio" name="successfulFraud" id="successfulFraudNo" value="no">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dates -->
+                        <div class="form-row">
+                            <div class="form-group" style="flex:1;">
+                                <label for="dateOfIncidentStart">Incident Start Date:</label>
+                                <input type="date" id="incidentStartDate" name="incidentStartDate" required />
+                            </div>
+                            <div class="form-group" style="flex:1;">
+                                <label for="dateOfIncidentEnd">Incident End Date:</label>
+                                <input type="date" id="incidentEndDate" name="incidentEndDate" required />
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group" style="flex:1;">
+                                <label for="close-findings">Findings:</label>
+                                <textarea id="close-findings" name="close-findings" required
+                                    placeholder="Enter findings..."></textarea>
+                            </div>
+                            <div class="form-group" style="flex:1;">
+                                <label for="close-conclusion">Conclusion:</label>
+                                <textarea id="close-conclusion" name="close-conclusion" required
+                                    placeholder="Enter conclusion..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group" style="flex:1; width:100%;">
+                                <label>Recommendations & Actioners:</label>
+                                <table id="recommendations-table" style="width:100%; border-collapse:collapse;">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:60%; text-align:left;">Recommendation</th>
+                                            <th style="width:35%; text-align:left;">Actioner</th>
+                                            <th style="width:5%;"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- JS will populate rows here -->
+                                    </tbody>
+                                </table>
+                                <button type="button" id="add-recommendation-row" style="margin-top:10px;">+ Add
+                                    Row</button>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group button-group" style="width:100%;">
+                                <button type="submit" class="primary-btn">Submit for First Review</button>
+                            </div>
+                        </div>
+                    </form>
+                </section>
+
+
+                <!-- Add cases -->
+                <section id="add-cases" class="content-section custom-report-form">
+                    <h2 class="form-section-title">Fraud Case Data Entry</h2>
+                    <form id="fraudForm" class="custom-report-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="forNumber">FOR Number:</label>
+                                <input type="text" id="forNumber" name="forNumber" pattern="[A-Za-z0-9]+" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="dateReported">Date Reported:</label>
+                                <input type="text" id="dateReported" name="dateReported" required
+                                    placeholder="Select date">
+                            </div>
+                            <div class="form-group">
+                                <label for="caseType">Case Type:</label>
+                                <select id="caseType" name="caseType" required>
+                                    <option value="">Select Case Type</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="dateOfIncidentStart">Date Of Incident Start:</label>
+                                <input type="text" id="closeIncidentStartDate" name="closeIncidentStartDate" required
+                                    placeholder="Select date">
+                            </div>
+                            <div class="form-group">
+                                <label for="dateOfIncidentEnd">Date Of Incident End:</label>
+                                <input type="text" id="closeIncidentEndDate" name="closeIncidentEndDate" required
+                                    placeholder="Select date">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="subsidiary">Subsidiary:</label>
+                                <select id="subsidiary">
+                                    <option value="">Select Subsidiary</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="region">Region:</label>
+                                <select id="region" name="region" required>
+                                    <option value="">Select Region</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="branch">Branch:</label>
+                                <select id="branch" name="branch" required>
+                                    <option value="">Select Branch</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="currency">Currency:</label>
+                                <select id="currency" name="currency" required>
+                                    <option value="">Select Currency</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="amountInvolved">Amount Involved:</label>
+                                <input type="number" id="amountInvolved" name="amountInvolved" step="0.01" required
+                                    placeholder="e.g., 5000.00">
+                            </div>
+                            <div class="form-group">
+                                <label for="status">Status:</label>
+                                <select id="status" name="status" required>
+                                    <option value="">Select Status</option>
+                                    <option value="unassigned">Unassigned</option>
+                                    <option value="closed">Closed</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="briefDetails">Brief Details:</label>
+                                <textarea id="briefDetails" name="briefDetails" required
+                                    placeholder="Describe the case briefly"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label id="fraudSuccessLabel">Is The Fraud Successful?</label><br>
+                                <div class="radio-row">
+                                    <div class="radio-item">
+                                        <label for="successfulFraudYes" id="labelFraudYes">Yes</label>
+                                        <input type="radio" id="successfulFraudYes" name="successfulFraud" value="yes"
+                                            required>
+                                    </div>
+                                    <div class="radio-item">
+                                        <label for="successfulFraudNo" id="labelFraudNo">No</label>
+                                        <input type="radio" id="successfulFraudNo" name="successfulFraud" value="no"
+                                            required>
+                                    </div>
+                                    <div class="radio-item">
+                                        <label for="successfulFraudOther" id="labelFraudOther">Other</label>
+                                        <input type="radio" id="successfulFraudOther" name="successfulFraud"
+                                            value="other" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group form-actions button-group">
+                                <button type="submit" class="primary-btn">Submit Fraud Case</button>
+                            </div>
+                        </div>
+                    </form>
+                </section>
+
+
+                <!-- Generate Reports -->
+                <section id="generate-reports" class="content-section dynamic-form" style="display: none;">
+                    <h2>Generate Reports</h2>
+
+                    <!-- Filter Options -->
+                    <form id="reportFilterForm">
+                        <label for="reportStartDate">Start Date:</label>
+                        <input type="date" id="reportStartDate" name="reportStartDate">
+
+                        <label for="reportEndDate">End Date:</label>
+                        <input type="date" id="reportEndDate" name="reportEndDate">
+
+                        <label for="reportCaseType">Case Type:</label>
+                        <select id="reportCaseType" name="reportCaseType">
+                            <option value="">All</option>
+                            <!-- Populate dynamically with case types -->
+                        </select>
+
+                        <label for="reportStatus">Status:</label>
+                        <select id="reportStatus" name="reportStatus">
+                            <option value="">All</option>
+                            <option value="open">Open</option>
+                            <option value="in-progress">In Progress</option>
+                            <option value="ongoing">Ongoing</option>
+                            <option value="closed">Closed</option>
+                        </select>
+
+                        <button type="submit">Generate</button>
+                    </form>
+
+                    <!-- Results Table -->
+                    <div id="reportResultsContainer" style="margin-top: 20px;">
+                        <table id="reportResultsTable" border="1" cellspacing="0" cellpadding="6">
+                            <thead>
+                                <tr>
+                                    <th>FOR Number</th>
+                                    <th>Case Type</th>
+                                    <th>Branch</th>
+                                    <th>Amount Involved</th>
+                                    <th>Date Reported</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Rows populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Export Button -->
+                    <button id="exportReportBtn" style="margin-top: 15px;">Export Report (PDF/Print)</button>
+                </section>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
