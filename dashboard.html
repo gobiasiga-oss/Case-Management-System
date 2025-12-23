@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Fraud Dashboard</title>
+    <link rel="stylesheet" href="CSS/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/11.3.1/firebase-database.js"></script>
+</head>
+<body class="dashboard-page">
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="comparisons.html">Comparisons</a></li>
+            <li><a href="reports.html">Reports</a></li>
+            <li><a href="data-entry.html">Data Entry</a></li>
+            <li><a href="#" id="logoutBtn">Logout</a></li>
+        </ul>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-container">
+        <!-- Fraud Info Cards -->
+        <div class="cards-row">
+            <div class="card">
+                <h3>Total Fraud Cases</h3>
+                <p id="totalCases"><span class="loading-indicator">Loading</span></p>
+            </div>
+            <div class="card">
+                <h3>Most Common Fraud</h3>
+                <p id="mostCommonFraud"><span class="loading-indicator">Loading</span></p>
+            </div>
+            <div class="card">
+                <h3>Country with Least Fraud</h3>
+                <p id="leastFraudCountry"><span class="loading-indicator">Loading</span></p>
+            </div>
+            <div class="card">
+                <h3>Country with Most Fraud</h3>
+                <p id="mostFraudCountry"><span class="loading-indicator">Loading</span></p>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin: 20px 0;">
+            <button class="refresh-btn" id="refreshBtn">Refresh Data</button>
+        </div>
+
+        <!-- Comparative Bar Graph -->
+        <div class="chart-container">
+            <canvas id="fraudComparisonChart"></canvas>
+        </div>
+
+        <!-- Top Three Countries with Most Fraud Cards -->
+        <div class="top-countries-row">
+            <div class="country-card" id="countryCard1">
+                <h4 class="country-name">Loading...</h4>
+                <canvas class="donut-chart" id="donutChart1"></canvas>
+            </div>
+            <div class="country-card" id="countryCard2">
+                <h4 class="country-name">Loading...</h4>
+                <canvas class="donut-chart" id="donutChart2"></canvas>
+            </div>
+            <div class="country-card" id="countryCard3">
+                <h4 class="country-name">Loading...</h4>
+                <canvas class="donut-chart" id="donutChart3"></canvas>
+            </div>
+        </div>
+
+        <!-- Legend Card for Donut Charts -->
+        <div class="legend-card">
+            <h3>Fraud Types Legend</h3>
+            <ul id="legendList"></ul>
+        </div>
+    </div>
+
+    <!-- Reference to external JavaScript file -->
+    <script type="module" src="JavaScript\dashboard.js"></script>
+</body>
+</html>
